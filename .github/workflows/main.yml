@@ -1,0 +1,55 @@
+name: CICD
+
+on:
+  push:
+    branches: [ trunk ]
+
+jobs:
+  change-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@11.0
+        with:
+          cli: 1.11.1.1347
+      - name: Cache clojure dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+          # List all files containing dependencies:
+          key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
+          restore-keys: cljdeps- 
+      - name: "Get projects with change"
+        id: set-matrix
+        run: clojure -M:poly ws get:changes:changed-or-affected-projects since:release skip:dev
+  
+  test:
+    name: Test ${{ matrix.nickname }}
+    runs-on: ubuntu-latest
+    if: needs.generate-matrix.outputs.matrix != ''
+    needs: [change-matrix]
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.generate-matrix.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@11.0
+        with:
+          cli: 1.11.1.1347
+      - name: Cache clojure dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+          # List all files containing dependencies:
+          key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
+          restore-keys: cljdeps- 
