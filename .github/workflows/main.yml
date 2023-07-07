@@ -25,6 +25,8 @@ jobs:
           # List all files containing dependencies:
           key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
           restore-keys: cljdeps- 
+      - name: "Show workspace info"
+        run: clojure -M:poly info
       - name: "Get projects with change"
         id: set-matrix
         run: clojure -M:poly ws get:changes:changed-or-affected-projects since:release skip:dev
