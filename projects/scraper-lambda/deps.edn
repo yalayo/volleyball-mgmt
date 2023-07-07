@@ -5,4 +5,5 @@
         poly/results-scraper {:local/root "../../bases/results-scraper"}}
 
  :aliases {:test {:extra-paths []
-                  :extra-deps  {}}}}
+                  :extra-deps  {}}
+           :uberjar {:main app.backend.results-scraper.core}}}
