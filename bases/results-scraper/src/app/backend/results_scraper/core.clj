@@ -10,5 +10,5 @@
 ;; Check how to use credentials (μ/start-publisher! {:type :cloudwatch :group-name "volleyball-3.0"})
 
 (defn -main [& args]
-  (println "Args -" args)
+  (println args)
   (μ/log ::lambda-execution, :args args))
