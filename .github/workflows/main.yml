@@ -63,3 +63,5 @@ jobs:
           # List all files containing dependencies:
           key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
           restore-keys: cljdeps- 
+      - name: Experiment
+        run: echo ${{ matrix.project }}
