@@ -37,6 +37,7 @@ jobs:
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
           json_array=$(echo "${result[@]}" | jq -R '. | split(" ")')
+          echo "projects="$json_array
           echo "projects="$json_array >> "$GITHUB_OUTPUT"
   
   test:
