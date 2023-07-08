@@ -34,16 +34,18 @@ jobs:
         run: clojure -M:poly info
       - name: "Get projects with change"
         id: set-matrix
-        run: clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev
+        run: |
+          $projects = clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev
+          echo "matrix=$projects" >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.nickname }}
     runs-on: ubuntu-latest
-    if: needs.generate-matrix.outputs.matrix != ''
+    if: needs.change-matrix.outputs.matrix != ''
     needs: [change-matrix]
     strategy:
       fail-fast: false
-      matrix: ${{fromJSON(needs.generate-matrix.outputs.matrix)}}
+      matrix: ${{fromJSON(needs.change-matrix.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v3
       - name: Install clojure tools
