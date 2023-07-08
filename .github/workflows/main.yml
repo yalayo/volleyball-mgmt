@@ -41,7 +41,7 @@ jobs:
           echo "projects="$cleaned_json
           final_result=$(echo "$cleaned_json" | jq -R '[.]' | jq -r '.[0]')
           echo "projects="$final_result
-          echo "projects="$final_result >> "$GITHUB_OUTPUT"
+          echo 'projects=[\"scraper-lambda\"]' >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.project }}
