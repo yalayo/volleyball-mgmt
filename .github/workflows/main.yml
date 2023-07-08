@@ -8,7 +8,7 @@ jobs:
   change-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.projects }}
+      projects: ${{ steps.set-matrix.outputs.projects }}
     steps:
       - uses: actions/checkout@v3
       - name: Install clojure tools
