@@ -36,7 +36,9 @@ jobs:
         id: set-matrix
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
-          echo "projects=${{ toJson(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev) }}" >> "$GITHUB_OUTPUT"
+          result=("abc" "def")
+          json_array=$(echo "${result[@]}" | jq -R '. | split(" ")')
+          echo "projects="$json_array >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.project }}
