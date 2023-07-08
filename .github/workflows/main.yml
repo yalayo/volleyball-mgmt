@@ -35,7 +35,7 @@ jobs:
       - name: "Get projects with change"
         id: set-matrix
         run: |
-          echo 'projects=${{ toJson('(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev) ')}}'
+          echo 'projects=${{ toJson($(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev))}}'
   
   test:
     name: Test ${{ matrix.project }}
