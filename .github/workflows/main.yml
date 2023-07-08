@@ -36,7 +36,7 @@ jobs:
         id: set-matrix
         run: |
           # Your Clojure array
-          clojure_array='["hello", "world"]'
+          clojure_array=["hello" "world"]
           # Use jq to convert the Clojure array to a JSON array
           json_array=$(echo "$clojure_array" | jq -c -R -s 'split("\n")[:-1]')
           # Print the JSON array
