@@ -25,6 +25,11 @@ jobs:
           # List all files containing dependencies:
           key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
           restore-keys: cljdeps- 
+      - name: Get all git tags
+        run: |
+          git fetch --prune --unshallow --tags
+          echo $?
+          git tag --list
       - name: "Show workspace info"
         run: clojure -M:poly info
       - name: "Get projects with change"
