@@ -39,7 +39,9 @@ jobs:
           json_array=$(echo "${result[@]}" | jq -R '. | split(" ") | map(select(length > 0))')
           cleaned_json=$(echo -e "$json_array" | sed -e "s/\x1B\[[0-9;]*[a-zA-Z]//g")
           echo "projects="$cleaned_json
-          echo "projects="$cleaned_json >> "$GITHUB_OUTPUT"
+          final_result=$(echo "$cleaned_json" | jq -R '[.]' | jq -r '.[0]')
+          echo "projects="$final_result
+          echo "projects="$final_result >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.project }}
