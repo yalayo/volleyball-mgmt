@@ -35,7 +35,12 @@ jobs:
       - name: "Get projects with change"
         id: set-matrix
         run: |
-          echo $(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
+          # Your Clojure array
+          clojure_array='["hello", "world"]'
+          # Use jq to convert the Clojure array to a JSON array
+          json_array=$(echo "$clojure_array" | jq -c -R -s 'split("\n")[:-1]')
+          # Print the JSON array
+          echo "$json_array"
           echo "projects="$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev) >> "$GITHUB_OUTPUT"
   
   test:
