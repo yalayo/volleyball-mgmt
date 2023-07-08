@@ -41,8 +41,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    if: needs.change-matrix.outputs.matrix.project != ''
-    needs: [change-matrix]
     strategy:
       fail-fast: false
       matrix:
