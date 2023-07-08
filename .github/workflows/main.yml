@@ -37,8 +37,9 @@ jobs:
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
           json_array=$(echo "${result[@]}" | jq -R '. | split(" ") | map(select(length > 0))')
-          echo "projects="$json_array
-          echo "projects="$json_array >> "$GITHUB_OUTPUT"
+          cleaned_json=$(echo -e "$json_array" | sed -e "s/\x1B\[[0-9;]*[a-zA-Z]//g")
+          echo "projects="$cleaned_json
+          echo "projects="$cleaned_json >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.project }}
