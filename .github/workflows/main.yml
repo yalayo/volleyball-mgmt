@@ -45,7 +45,7 @@ jobs:
     needs: [change-matrix]
     strategy:
       fail-fast: false
-      matrix: needs.change-matrix.outputs.matrix
+      matrix: ${{needs.change-matrix.outputs.matrix}}
     steps:
       - uses: actions/checkout@v3
       - name: Install clojure tools
