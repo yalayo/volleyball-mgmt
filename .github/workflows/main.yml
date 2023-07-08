@@ -36,7 +36,7 @@ jobs:
         id: set-matrix
         run: |
           echo $(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
-          echo "matrix="$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev) >> "$GITHUB_OUTPUT"
+          echo "matrix=['package-a', 'package-b', 'package-c']" >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.nickname }}
