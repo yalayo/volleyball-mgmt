@@ -36,12 +36,16 @@ jobs:
         id: set-matrix
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
-          json_array=$(echo "${result[@]}" | jq -R '. | split(" ") | map(select(length > 0))')
-          cleaned_json=$(echo -e "$json_array" | sed -e "s/\x1B\[[0-9;]*[a-zA-Z]//g")
-          echo "projects="$cleaned_json
-          final_result=$(echo "$cleaned_json" | jq -R '[.]' | jq -r '.[0]')
-          echo "projects="$final_result
-          echo 'projects={\"include\":[\"scraper-lambda\"]}' >> "$GITHUB_OUTPUT"
+          
+          json_array="["
+          for element in "${result[@]}"
+          do
+            json_array+=$element", "
+          done
+          # Remove the trailing comma and add the closing bracket
+          json_array=${json_array%, *}"]"
+          echo "projects="$json_array
+          echo "projects="$json_array >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.project }}
