@@ -39,6 +39,7 @@ jobs:
           json_array=$(echo $result | bb scripts/modified_projects.clj)
           echo 'projects='$json_array
           echo 'projects='$json_array >> $GITHUB_OUTPUT
+      - run: echo "The output is ${{ steps.set-matrix.outputs.projects }}"
   
   test:
     name: Test ${{ matrix.project }}
