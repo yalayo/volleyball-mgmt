@@ -34,9 +34,9 @@ jobs:
         id: set-matrix
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
-          a=["example1" "example2" "example3"]
+          
           json_array="["
-          for element in "${a[@]}"
+          for element in "${result[@]}"
           do
             if [[ $element =~ ^\"(.+)\"$ ]]; then
               extracted_string=${BASH_REMATCH[1]}
