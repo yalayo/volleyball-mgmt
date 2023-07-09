@@ -37,8 +37,8 @@ jobs:
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
           
           json_array=$(echo $result | bb scripts/modified_projects.clj)
-          echo "projects="$json_array
-          echo "projects="$json_array >> "$GITHUB_OUTPUT"
+          echo 'projects='$json_array
+          echo 'projects='$json_array >> "$GITHUB_OUTPUT"
   
   test:
     name: Test ${{ matrix.project }}
