@@ -36,10 +36,11 @@ jobs:
         id: set-matrix
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
-          
+          echo $result
           json_array="["
           for element in "${result[@]}"
           do
+            echo $element
             json_array+=$element", "
           done
           # Remove the trailing comma and add the closing bracket
