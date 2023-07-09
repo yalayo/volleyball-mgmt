@@ -35,18 +35,7 @@ jobs:
         run: |
           result=$(clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev)
           
-          json_array="["
-          for element in "${result[@]}"
-          do
-            if [[ $element =~ ^\"(.+)\"$ ]]; then
-              extracted_string=${BASH_REMATCH[1]}
-              echo $extracted_string
-              json_array+="$extracted_string, "
-            fi
-          done
-          # Remove the trailing comma and add the closing bracket
-          json_array=${json_array%, *}"]"
-          echo "projects="$json_array
+          json_array=$(bb scripts/modified_projects.clj $result)
           echo "projects="$json_array >> "$GITHUB_OUTPUT"
   
   test:
