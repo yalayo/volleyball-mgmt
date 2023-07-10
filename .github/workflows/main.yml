@@ -38,9 +38,31 @@ jobs:
           echo 'projects='$(echo $result | bb scripts/modified_projects.clj) >> $GITHUB_OUTPUT
   
   test:
+    name: Test workspace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@11.0
+        with:
+          cli: 1.11.1.1347
+      - name: Cache clojure dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+          # List all files containing dependencies:
+          key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
+          restore-keys: cljdeps- 
+      - name: Test
+        run: clojure -M:poly test
+
+  build:
     name: Test ${{ matrix.project }}
     runs-on: ubuntu-latest
-    needs: [change-matrix]
+    needs: [change-matrix, test]
     strategy:
       fail-fast: false
       matrix:
@@ -61,5 +83,5 @@ jobs:
           # List all files containing dependencies:
           key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
           restore-keys: cljdeps- 
-      - name: Experiment
-        run: echo ${{ matrix.project }}
+      - name: Create uberjar
+        run: clj -T:build uberjar :project ${{ matrix.project }}
