@@ -60,7 +60,7 @@ jobs:
         run: clojure -M:poly test
 
   build:
-    name: Test ${{ matrix.project }}
+    name: Build uberjar for project - ${{ matrix.project }}
     runs-on: ubuntu-latest
     needs: [change-matrix, test]
     strategy:
@@ -84,4 +84,4 @@ jobs:
           key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
           restore-keys: cljdeps- 
       - name: Create uberjar
-        run: clj -T:build uberjar :project ${{ matrix.project }}
+        run: clojure -T:build uberjar :project ${{ matrix.project }}
