@@ -60,7 +60,7 @@ jobs:
         run: clojure -M:poly test
 
   build:
-    name: Build uberjar for project - ${{ matrix.project }}
+    name: Build and deploy project -> ${{ matrix.project }}
     runs-on: ubuntu-latest
     needs: [change-matrix, test]
     strategy:
@@ -85,3 +85,15 @@ jobs:
           restore-keys: cljdeps- 
       - name: Create uberjar
         run: clojure -T:build uberjar :project ${{ matrix.project }}
+      - name: Deploy uberjar
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.2
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - run: |
+          cd ./projects/${{ matrix.project }}/terraform/
+          terraform init
+          terraform apply
