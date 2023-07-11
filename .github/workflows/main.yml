@@ -92,9 +92,14 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
           native-image-job-reports: 'true'
       - name: Build native-image
-        run: | 
-          native-image -jar ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar
-          ls -l
+        run: |
+          native-image --report-unsupported-elements-at-runtime \
+             --initialize-at-build-time \
+             --no-server \
+             -jar ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar \
+             -H:Name=./projects/${{ matrix.project }}/target/executable
+          echo "Test run ..."
+          ./projects/${{ matrix.project }}/target/executable
       - name: Deploy uberjar
         uses: hashicorp/setup-terraform@v2
         with:
