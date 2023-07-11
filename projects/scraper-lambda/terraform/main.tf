@@ -1,3 +1,27 @@
+# provider config
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.7.0"
+    }
+  }
+
+  cloud {
+    organization = "rondon-sarnik"
+
+    workspaces {
+      name = "volleyball-workspace"
+      tags = ["scraper-lambda", "source:github-actions"]
+    }
+  }
+}
+
+# Configure the AWS Provider
+provider "aws" {
+  region = "eu-central-1"
+}
+
 # get the policy to be used
 data "aws_iam_policy_document" "assume_role" {
   statement {
