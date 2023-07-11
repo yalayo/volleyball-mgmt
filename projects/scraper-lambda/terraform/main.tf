@@ -12,7 +12,6 @@ terraform {
 
     workspaces {
       name = "volleyball-workspace"
-      tags = ["scraper-lambda", "source:github-actions"]
     }
   }
 }
