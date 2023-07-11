@@ -85,6 +85,16 @@ jobs:
           restore-keys: cljdeps- 
       - name: Create uberjar
         run: clojure -T:build uberjar :project ${{ matrix.project }}
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '17.0.7' # for a specific JDK 17; or '17' for the latest JDK 17
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GH_TOKEN }}
+          native-image-job-reports: 'true'
+      - name: Build native-image
+        run: | 
+          native-image ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar
+          ls -l
       - name: Deploy uberjar
         uses: hashicorp/setup-terraform@v2
         with:
