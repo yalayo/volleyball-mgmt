@@ -47,6 +47,7 @@ resource "aws_lambda_function" "target_lambda" {
   # path.module in the filename.
   filename      = "function.zip"
   function_name = "scraper_lambda"
+  handler       = "executable"
   role          = aws_iam_role.iam_for_lambda.arn
 
   runtime = "provided"
