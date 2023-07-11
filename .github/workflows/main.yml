@@ -93,7 +93,7 @@ jobs:
           native-image-job-reports: 'true'
       - name: Build native-image
         run: | 
-          native-image ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar
+          native-image -jar ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar
           ls -l
       - name: Deploy uberjar
         uses: hashicorp/setup-terraform@v2
