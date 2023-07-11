@@ -106,7 +106,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
-      - name: Deploy uberjar
+      - name: Deploy lambda function
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.2
@@ -114,7 +114,10 @@ jobs:
       - run: |
           chmod 755 ./projects/${{ matrix.project }}/target/executable ./scripts/bootstrap
           zip function.zip ./projects/${{ matrix.project }}/target/executable ./scripts/bootstrap
+          ls
+          cp function.zip ./projects/${{ matrix.project }}/terraform/
       - run: |
           cd ./projects/${{ matrix.project }}/terraform/
+          ls
           terraform init
           terraform apply -auto-approve
