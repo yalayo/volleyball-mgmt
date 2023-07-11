@@ -111,7 +111,9 @@ jobs:
         with:
           terraform_version: 1.5.2
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - run: zip function.zip ./projects/${{ matrix.project }}/target/executable ./scripts/bootstrap
+      - run: |
+          chmod 755 ./projects/${{ matrix.project }}/target/executable ./scripts/bootstrap
+          zip function.zip ./projects/${{ matrix.project }}/target/executable ./scripts/bootstrap
       - run: |
           cd ./projects/${{ matrix.project }}/terraform/
           terraform init
