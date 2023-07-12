@@ -6,6 +6,7 @@ on:
 
 jobs:
   change-matrix:
+    name: Calculate changes
     runs-on: ubuntu-latest
     outputs:
       projects: ${{ steps.set-matrix.outputs.projects }}
@@ -95,8 +96,14 @@ jobs:
         run: |
           native-image --report-unsupported-elements-at-runtime \
              --initialize-at-build-time \
+             --report-unsupported-elements-at-runtime \
+             --no-fallback \
+             --verbose \
              --no-server \
              -jar ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar \
+             -H:+ReportExceptionStackTrace \
+             -J-Dclojure.spec.skip.macros=true \
+             -J-Dclojure.compiler.direct-linking=true \
              -H:Name=./projects/${{ matrix.project }}/target/executable
           echo "Test run ..."
           ./projects/${{ matrix.project }}/target/executable
