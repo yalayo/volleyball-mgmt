@@ -101,7 +101,7 @@ jobs:
              --verbose \
              --no-server \
              -jar ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar \
-             -H:+ReportExceptionStackTrace \
+             -H:+ReportExceptionStackTraces \
              -J-Dclojure.spec.skip.macros=true \
              -J-Dclojure.compiler.direct-linking=true \
              -H:Name=./projects/${{ matrix.project }}/target/executable
