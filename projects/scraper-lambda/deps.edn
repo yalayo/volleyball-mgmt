@@ -6,4 +6,5 @@
 
  :aliases {:test {:extra-paths []
                   :extra-deps  {}}
-           :uberjar {:main app.backend.results-scraper.core}}}
+           :uberjar {:main app.backend.results-scraper.core
+                     :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}}
