@@ -119,15 +119,13 @@ jobs:
           terraform_version: 1.5.2
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       - run: |
-          ls -l
           cp ./scripts/bootstrap ./projects/${{ matrix.project }}/target/
-          cp ./jre17-slim/ ./projects/${{ matrix.project }}/target/
+          cp -r ./jre17-slim/ ./projects/${{ matrix.project }}/target/
           cd ./projects/${{ matrix.project }}/target/
           cp ${{ matrix.project }}.jar function.jar
           chmod 755 bootstrap
           zip function.zip bootstrap function.jar /jre17-slim
           cp function.zip ../terraform/
-          ls -l
       - run: |
           cd ./projects/${{ matrix.project }}/terraform/
           terraform init
