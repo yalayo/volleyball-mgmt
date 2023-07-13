@@ -50,5 +50,5 @@ resource "aws_lambda_function" "target_lambda" {
   handler       = "executable"
   role          = aws_iam_role.iam_for_lambda.arn
 
-  runtime = "provided"
+  runtime = "provided.al2"
 }
