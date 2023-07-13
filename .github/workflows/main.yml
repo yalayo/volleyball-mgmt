@@ -105,7 +105,7 @@ jobs:
           --strip-java-debug-attributes \
           --no-header-files \
           --no-man-pages \
-          --output /jre17-slim \
+          --output ./jre17-slim \
           --add-modules $(cat jre-deps.info)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
