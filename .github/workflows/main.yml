@@ -25,7 +25,7 @@ jobs:
             ~/.gitlibs
             ~/.deps.clj
           # List all files containing dependencies:
-          key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
+          key: cljdeps-${{ hashFiles('deps.edn') }}
           restore-keys: cljdeps- 
       - name: Get all git tags
         run: |
@@ -55,7 +55,7 @@ jobs:
             ~/.gitlibs
             ~/.deps.clj
           # List all files containing dependencies:
-          key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
+          key: cljdeps-${{ hashFiles('deps.edn') }}
           restore-keys: cljdeps- 
       - name: Test
         run: clojure -M:poly test
@@ -82,7 +82,7 @@ jobs:
             ~/.gitlibs
             ~/.deps.clj
           # List all files containing dependencies:
-          key: cljdeps-${{ hashFiles('.backend/deps.edn') }}
+          key: cljdeps-${{ hashFiles('deps.edn') }}
           restore-keys: cljdeps- 
       - name: Create uberjar
         run: clojure -T:build uberjar :project ${{ matrix.project }}
@@ -127,8 +127,8 @@ jobs:
           cp ${{ matrix.project }}.jar function.jar
           chmod 755 bootstrap
           ls -l
-          ls -l ./jre17-slim
-          zip function.zip bootstrap function.jar ./jre17-slim
+          ls -l jre17-slim/
+          zip function.zip bootstrap function.jar jre17-slim
           cp function.zip ../terraform/
       - run: |
           cd ./projects/${{ matrix.project }}/terraform/
