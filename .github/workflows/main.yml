@@ -107,6 +107,8 @@ jobs:
           --no-man-pages \
           --output ./jre17-slim \
           --add-modules $(cat jre-deps.info)
+          cd ./jre17-slim
+          ls -l
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
