@@ -124,7 +124,8 @@ jobs:
           cd ./projects/${{ matrix.project }}/target/
           cp ${{ matrix.project }}.jar function.jar
           chmod 755 bootstrap
-          zip function.zip bootstrap function.jar /jre17-slim
+          ls -l
+          zip function.zip bootstrap function.jar ./jre17-slim
           cp function.zip ../terraform/
       - run: |
           cd ./projects/${{ matrix.project }}/terraform/
