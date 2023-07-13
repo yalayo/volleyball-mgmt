@@ -86,28 +86,27 @@ jobs:
           restore-keys: cljdeps- 
       - name: Create uberjar
         run: clojure -T:build uberjar :project ${{ matrix.project }}
-      - uses: graalvm/setup-graalvm@v1
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
-          java-version: '17.0.7' # for a specific JDK 17; or '17' for the latest JDK 17
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GH_TOKEN }}
-          native-image-job-reports: 'true'
-      - name: Build native-image
+          java-version: '17'
+          jdk-package: 'jdk.jlink'
+      - name: Run jdeps
         run: |
-          native-image --report-unsupported-elements-at-runtime \
-             --initialize-at-build-time \
-             --report-unsupported-elements-at-runtime \
-             --no-fallback \
-             --verbose \
-             --no-server \
-             --static --libc=musl \
-             -jar ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar \
-             -H:+ReportExceptionStackTraces \
-             -J-Dclojure.spec.skip.macros=true \
-             -J-Dclojure.compiler.direct-linking=true \
-             -H:Name=./projects/${{ matrix.project }}/target/executable
-          echo "Test run ..."
-          ./projects/${{ matrix.project }}/target/executable
+          jdeps -q \
+          --ignore-missing-deps \
+          --multi-release 18 \
+          --print-module-deps \
+          ./projects/${{ matrix.project }}/target/${{ matrix.project }}.jar > jre-deps.info
+      - name: Run jlink
+        run: |
+          jlink --verbose \
+          --compress 2 \
+          --strip-java-debug-attributes \
+          --no-header-files \
+          --no-man-pages \
+          --output /jre17-slim \
+          --add-modules $(cat jre-deps.info)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -120,13 +119,15 @@ jobs:
           terraform_version: 1.5.2
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       - run: |
-          cp ./scripts/bootstrap ./projects/${{ matrix.project }}/target/
-          cd ./projects/${{ matrix.project }}/target/
-          chmod 755 executable 
-          chmod 755 bootstrap
-          zip function.zip executable bootstrap
           ls -l
+          cp ./scripts/bootstrap ./projects/${{ matrix.project }}/target/
+          cp ./jre17-slim/ ./projects/${{ matrix.project }}/target/
+          cd ./projects/${{ matrix.project }}/target/
+          cp ${{ matrix.project }}.jar function.jar
+          chmod 755 bootstrap
+          zip function.zip bootstrap function.jar /jre17-slim
           cp function.zip ../terraform/
+          ls -l
       - run: |
           cd ./projects/${{ matrix.project }}/terraform/
           terraform init
