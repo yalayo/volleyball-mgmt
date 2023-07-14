@@ -67,7 +67,6 @@ jobs:
     env:
       DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      #JIB_CONFIG: "./projects/${{ matrix.project }}/jib.edn"
     strategy:
       fail-fast: false
       matrix:
@@ -90,6 +89,7 @@ jobs:
           restore-keys: cljdeps- 
       - name: Create docker image
         run: |
+          echo "My variable value: $DOCKER_HUB_USER"
           clojure -Ttools install io.github.atomisthq/jibbit '{:git/tag "v0.1.14"}' :as jib
           cd ./projects/${{ matrix.project }}/
           clojure -Tjib build
