@@ -4,5 +4,5 @@
               :type :registry}
  :target-image {:image-name "rondonsarnik/scraper-lambda"
                 :type :registry
-                :username #env DOCKER_HUB_USER
-                :password #env DOCKER_HUB_PASSWORD}}
+                :username (System/getenv "DOCKER_HUB_USER") 
+                :password (System/getenv "DOCKER_HUB_PASSWORD")}}
