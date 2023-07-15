@@ -4,5 +4,5 @@
               :type :registry}
  :target-image {:image-name "testing/scraper-lambda"
                 :type :registry
-                :username (System/getenv "DOCKER_HUB_USER")  
-                :password (System/getenv "DOCKER_HUB_PASSWORD")}}
+                :username "user"  
+                :password "pass"}}
