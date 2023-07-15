@@ -43,12 +43,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 
 # create the lambda where to deploy this project on
 resource "aws_lambda_function" "target_lambda" {
-  # If the file is not in the current working directory you will need to include a
-  # path.module in the filename.
-  filename      = "function.zip"
-  function_name = "scraper_lambda"
-  handler       = "executable"
+  package_type  = "Image"
+  image_uri     = "rondonsarnik/scraper-lambda"
   role          = aws_iam_role.iam_for_lambda.arn
-
-  runtime = "provided.al2"
 }
