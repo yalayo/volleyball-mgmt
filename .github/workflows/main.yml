@@ -89,10 +89,8 @@ jobs:
           restore-keys: cljdeps- 
       - name: Create docker image
         run: |
-          echo "My variable value: $DOCKER_HUB_USER"
-          clojure -Ttools install io.github.atomisthq/jibbit '{:git/tag "v0.1.14"}' :as jib
           cd ./projects/${{ matrix.project }}/
-          clojure -Tjib build
+          clojure -T:jib jibbit.core/build
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
