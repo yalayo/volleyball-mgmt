@@ -113,12 +113,22 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: Connect and pull new latest version
         run: |
-          ls -l
           scp ./projects/${{ matrix.project }}/docker/docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "\
           cd ${{ secrets.WORK_DIR }} && \
           docker compose pull && \
           docker compose up -d && \
           exit"
-      - name: cleanup
+      - name: Cleanup
         run: rm -rf ~/.ssh
+      - name: Mark commit as a stable point
+        run: |
+          latest_tag=$(git describe --abbrev=0 --tags)
+          IFS='-' read -ra tag_parts <<< "$latest_tag"
+          
+          new_last_number=$(( ${tag_parts[-1]} + 1 ))
+          
+          new_tag="${tag_parts[0]}-$new_last_number"
+          echo $new_tag
+          git tag "$new_tag"
+          git push origin "$new_tag"
