@@ -11,4 +11,5 @@
                                :sha "6f55e679dc30de53ed89c7c89ddad0863e7e0600"}}}
                      :ns-default jibbit.core
            :uberjar {:main app.backend.results-scraper.core
+                     :uber-file "target/app.jar"
                      :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}}}
