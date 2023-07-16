@@ -97,7 +97,7 @@ jobs:
   deploy:
     name: Deploy project - ${{ matrix.project }} to OCI
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [change-matrix, build]
     strategy:
       fail-fast: false
       matrix:
