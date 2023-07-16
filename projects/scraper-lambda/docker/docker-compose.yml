@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  scraper-lambda:
+    image: rondonsarnik/scraper-lambda
+    container_name: scraper-lambda
+    ports:
+      - 8080:8080
