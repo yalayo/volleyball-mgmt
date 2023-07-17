@@ -41,3 +41,4 @@ projects/**/pom.xml
 # Others
 .vscode/*
 .calva/*
+.portal/*
