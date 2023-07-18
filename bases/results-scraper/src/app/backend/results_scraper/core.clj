@@ -2,7 +2,7 @@
   (:require [com.brunobonacci.mulog :as μ]
             [net.cgrand.enlive-html :refer [html-resource select]]
             [chime.core :as chime])
-  (:import [java.time Instant LocalTime]
+  (:import [java.time LocalTime ZonedDateTime ZoneId Period]
            [java.io FileNotFoundException])
   (:gen-class))
 
@@ -28,8 +28,10 @@
     (μ/log ::league-list :exception e :status :failed :possible-reason "Unknown!"))))
 
 (defn -main [& args]
-  (chime/chime-at (-> (chime/periodic-seq (Instant/now) (LocalTime/of 13 0 0))
-                      rest)
+  (chime/chime-at (-> (chime/periodic-seq (-> (LocalTime/of 13 0 0)
+                                              (.adjustInto (ZonedDateTime/now (ZoneId/of "Europe/Berlin")))
+                                              .toInstant)
+                                          (Period/ofDays 1)))
                   (fn [time]
                     (league-list leagues-url)
                     (μ/log ::task-execution :args args :message (str "Chiming at" time)))))
