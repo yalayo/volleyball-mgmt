@@ -1,7 +1,8 @@
 {:aliases  {:dev {:extra-paths ["development/src"
                                 "bases/results-scraper/src"
                                 "bases/results-scraper/resources"]
-                  :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}}}
+                  :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                               jarohen/chime {:mvn/version "0.3.3"}}}
 
             :test {:extra-paths ["bases/results-scraper/test"]}
 
