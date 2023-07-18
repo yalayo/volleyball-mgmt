@@ -121,6 +121,9 @@ jobs:
           exit"
       - name: Cleanup
         run: rm -rf ~/.ssh
+      - name: Get all git tags
+        run: |
+          git fetch --prune --unshallow --tags
       - name: Mark commit as a stable point
         run: |
           latest_tag=$(git describe --abbrev=0 --tags)
