@@ -2,7 +2,7 @@
   (:require [com.brunobonacci.mulog :as μ]
             [net.cgrand.enlive-html :refer [html-resource select]]
             [chime.core :as chime])
-  (:import [java.time Instant Duration]
+  (:import [java.time Instant LocalTime]
            [java.io FileNotFoundException])
   (:gen-class))
 
@@ -14,9 +14,9 @@
 ;; Check how to use credentials (μ/start-publisher! {:type :cloudwatch :group-name "volleyball-3.0"})
 
 ;; Lueagues list page.
-(def url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenn/")
+(def leagues-url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/")
 
-(defn league-list []
+(defn league-list [url]
   (try
     (let [response (html-resource (java.net.URL. url))]
       response)
@@ -28,8 +28,8 @@
     (μ/log ::league-list :exception e :status :failed :possible-reason "Unknown!"))))
 
 (defn -main [& args]
-  (chime/chime-at (-> (chime/periodic-seq (Instant/now) (Duration/ofSeconds 3))
+  (chime/chime-at (-> (chime/periodic-seq (Instant/now) (LocalTime/of 13 0 0))
                       rest)
                   (fn [time]
-                    (μ/log ::task-execution :args args :message (str "Chiming at" time))
-                    (println "Chiming at" time))))
+                    (league-list leagues-url)
+                    (μ/log ::task-execution :args args :message (str "Chiming at" time)))))
