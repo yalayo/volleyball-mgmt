@@ -8,6 +8,12 @@ To be able to get the projects changed since the last stable point not only was 
           echo $?
           git tag --list
 
+After a successfull build and deploy we should mark the commit as a stable point (in time). For that we use tags.
+Commands to work with tags
+git describe --abbrev=0 --tags
+git tag -f -a "stable-0" -m "Message"
+git push -u --tags --force
+
 It its necessary to convert the result of the execution of the command below to Json so we can use it in the next step dinamically.
 clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev
 
