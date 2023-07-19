@@ -1,6 +1,7 @@
 (ns scrap-leagues
   (:require [net.cgrand.enlive-html :refer [html-resource select]]
-            [portal.api :as p]))
+            [portal.api :as p]
+            [clojure.spec.alpha :as s]))
 
 ;; Code to activate portal
 (def portal-atom (atom nil))
@@ -77,3 +78,45 @@
 (def women-leagues-urls
   [{:name "Bezirksklasse 20" :category "bezirk" :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
    {:name "Kreisliga UNNA Jungen/Mixed" :category "jungen" :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
+
+;; Method to scrape an url using selectors
+(defn scrape [url selector]
+  (let [doc (html-resource (java.net.URL. url))
+        nodes (select doc selector)]
+    (map #(-> % :content first) nodes)))
+
+;; Getting the positions table information
+(def example-league-url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/")
+(def result (scrape example-league-url [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr]))
+(tap> result)
+
+;; Creating spec to validate that the data comming from the website hasn't change its structure.
+(s/def ::content (s/coll-of string?))
+(s/def ::tag (s/and keyword? #(= % :td)))
+
+(s/def ::data-title string?)
+(s/def ::attrs (s/and map? 
+                      #(contains? % :data-title) 
+                      (s/keys :req-un [::data-title])))
+(s/def ::row (s/and map?
+                    (s/keys :req-un [::attrs ::content ::tag])))
+(s/def ::table (s/coll-of ::row))
+
+;; To watch the data
+(def row (first result))
+(tap> row)
+(def content (:content row))
+(tap> content)
+(def tag (:tag row))
+(tap> tag)
+(def attrs (:attrs row))
+(tap> (first (keys attrs)))
+
+;; Testing the specs
+(s/valid? ::sequence result)
+(s/valid? ::sequence row)
+(s/valid? ::content content)
+(s/valid? ::tag tag)
+(s/valid? ::attrs attrs)
+(s/valid? ::row row)
+(s/valid? ::table result)
