@@ -1,0 +1,4 @@
+{:paths ["src" "resources"]
+ :deps {alekcz/datahike-firebase {:mvn/version "0.5.1506"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {}}}}
