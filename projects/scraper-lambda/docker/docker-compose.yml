@@ -9,3 +9,4 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/home/ubuntu/volleyball/database-access.json
       - DB_HOST=${DB_HOST}
       - DB_ROOT=${DB_ROOT}
+      - ENVIRONMENT=prod
