@@ -1,8 +1,8 @@
 {:deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.deps.alpha {:mvn/version "0.12.985"}
-        alekcz/datahike-firebase {:mvn/version "0.5.1506"}
         
         ; Bricks
+        poly/database {:local/root "../../bases/database"}
         poly/results-scraper {:local/root "../../bases/results-scraper"}}
 
  :aliases {:test {:extra-paths []

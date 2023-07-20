@@ -1,4 +1,6 @@
 {:aliases  {:dev {:extra-paths ["development/src"
+                                "components/database/src"
+                                "components/database/resources"
                                 "bases/results-scraper/src"
                                 "bases/results-scraper/resources"]
                   :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
@@ -7,7 +9,8 @@
                                djblue/portal {:mvn/version "0.35.1"}
                                alekcz/datahike-firebase {:mvn/version "0.5.1506"}}}
 
-            :test {:extra-paths ["bases/results-scraper/test"]}
+            :test {:extra-paths ["components/database/test"
+                                 "bases/results-scraper/test"]}
 
             :poly {:main-opts ["-m" "polylith.clj.core.poly-cli.core"]
                    :extra-deps {polyfy/polylith
