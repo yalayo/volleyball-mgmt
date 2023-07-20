@@ -18,3 +18,29 @@ It its necessary to convert the result of the execution of the command below to 
 clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:dev
 
 For that babashka was included in the action and a script writen in clojure which is located in the 'scripts' folder on the root of the project.
+
+## Database in firebase
+Commands
+If there is nothig
+firebase init
+To run the emulator locally and test
+firebase emulators:start --project volleyball-3-0
+
+Where do i find the value for GOOGLE_APPLICATION_CREDENTIALS
+The GOOGLE_APPLICATION_CREDENTIALS environment variable is typically set to the path of a JSON file that contains the service account key for your Google Cloud project. This JSON file is used to authenticate your application when making requests to Google Cloud services.
+
+To find the value for GOOGLE_APPLICATION_CREDENTIALS, you will need to generate and download the JSON key file for your service account in the Google Cloud console. Here's how you can do it:
+
+Open the Google Cloud Console (console.cloud.google.com) and select your project.
+
+In the sidebar, navigate to "IAM & admin" > "Service accounts".
+
+Locate the service account for which you want to generate a key and click on it.
+
+Under the "Keys" tab, click on the "Add Key" button and select "Create new key".
+
+Choose the key type as JSON and click on the "Create" button. This will generate and download the JSON key file to your local machine.
+
+Once the JSON key file is downloaded, find its location on your computer. This location will be the value for GOOGLE_APPLICATION_CREDENTIALS.
+
+Remember to keep the JSON key file secure and do not share it publicly, as it contains sensitive information that grants access to your Google Cloud resources.
