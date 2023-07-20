@@ -43,3 +43,11 @@ projects/**/pom.xml
 .calva/*
 .portal/*
 **/**/.calva/*
+
+# Firebase
+.firebaserc
+database-debug.log
+database.rules.json
+firebase-debug.log
+firebase.json
+ui-debug.log
