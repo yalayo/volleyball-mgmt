@@ -1,7 +1,8 @@
 (ns scrap-leagues
   (:require [net.cgrand.enlive-html :refer [html-resource select]]
             [portal.api :as p]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha :as s]
+            [clojure.string :as str]))
 
 ;; Code to activate portal
 (def portal-atom (atom nil))
@@ -91,15 +92,15 @@
 (tap> result)
 
 ;; Creating spec to validate that the data comming from the website hasn't change its structure.
-(s/def ::content (s/coll-of string?))
+(s/def ::content (s/or :a (s/and (s/coll-of any?) #(contains? % :content)) :b (s/coll-of string?)))
 (s/def ::tag (s/and keyword? #(= % :td)))
 
 (s/def ::data-title string?)
-(s/def ::attrs (s/and map? 
-                      #(contains? % :data-title) 
+(s/def ::attrs (s/and #(contains? % :data-title) 
                       (s/keys :req-un [::data-title])))
+(s/def ::column (s/keys :req-un [::attrs  ::content ::tag]))
 (s/def ::row (s/and map?
-                    (s/keys :req-un [::attrs ::content ::tag])))
+                    (s/keys :req-un [::content ::tag])))
 (s/def ::table (s/coll-of ::row))
 
 ;; To watch the data
@@ -119,4 +120,37 @@
 (s/valid? ::tag tag)
 (s/valid? ::attrs attrs)
 (s/valid? ::row row)
+(s/explain ::row row)
 (s/valid? ::table result)
+(s/explain ::table result)
+
+;; Organizing the data
+(defn extract-attribute [data]
+  (tap> data)
+  (let [value (first (:content data))] 
+    (if (= (type value) java.lang.String)
+      (str/trim value)
+      (first (:content value)))))
+
+(defn extract [data]
+  (doseq [item data] 
+    (if (= (first item) :content)
+      (if (s/valid? ::column (last item))
+        (let [content (last item)
+              place (extract-attribute (first content))
+              team (extract-attribute (second content))
+              games (extract-attribute (nth content 2))
+              scores (extract-attribute (nth content 3))
+              sets (extract-attribute (nth content 4))
+              points (extract-attribute (nth content 5))]
+          (tap> content)
+          {:place place :team team :games games :scores scores :sets sets :points points})
+        (s/explain ::column (last item)))
+     )))
+
+(defn scan-table [url]
+  (let [website-content (html-resource (java.net.URL. url))
+        content (select website-content [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr])]
+    (map extract content)))
+
+(scan-table example-league-url)
