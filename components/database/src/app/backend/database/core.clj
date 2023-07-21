@@ -9,7 +9,7 @@
                               :schema-flexibility :read 
                               :keep-history? false}
                    (if (= (System/getenv "ENVIRONMENT") "prod")
-                     {:env (System/getenv "GOOGLE_APPLICATION_CREDENTIALS")})))
+                     {:env "GOOGLE_APPLICATION_CREDENTIALS"})))
 
 (defn init []
   (if-not (d/database-exists? config)
