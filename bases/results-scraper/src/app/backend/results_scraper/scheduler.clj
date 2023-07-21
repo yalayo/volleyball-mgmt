@@ -27,3 +27,8 @@
                   (fn [time]
                     (league-list leagues-url)
                     (μ/log ::task-execution :message (str "Chiming at" time)))))
+
+;; To execute the schedule manually
+(comment
+  (schedule)
+  )
