@@ -6,7 +6,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/home/ubuntu/volleyball/database-access.json
+      - GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS}
       - DB_HOST=${DB_HOST}
       - DB_ROOT=${DB_ROOT}
       - ENVIRONMENT=prod
