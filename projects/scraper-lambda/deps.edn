@@ -1,8 +1,11 @@
 {:deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.deps.alpha {:mvn/version "0.12.985"}
+        com.brunobonacci/mulog {:mvn/version "0.9.0"}
+        com.brunobonacci/mulog-cloudwatch {:mvn/version "0.9.0"}
+        enlive/enlive {:mvn/version "1.1.6"}
         
         ; Bricks
-        poly/database {:local/root "../../bases/database"}
+        poly/database {:local/root "../../components/database"}
         poly/results-scraper {:local/root "../../bases/results-scraper"}}
 
  :aliases {:test {:extra-paths []
