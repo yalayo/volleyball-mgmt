@@ -1,6 +1,7 @@
 (ns app.backend.results-scraper.core
   (:require [com.brunobonacci.mulog :as μ] 
-            [app.backend.database.interface :as database]) 
+            [app.backend.database.interface :as database]
+            [app.backend.results-scraper.scheduler :as scheduler]) 
   (:gen-class))
 
 (μ/set-global-context!
@@ -11,4 +12,5 @@
 ;; Check how to use credentials (μ/start-publisher! {:type :cloudwatch :group-name "volleyball-3.0"})
 
 (defn -main [& args]
-  (database/init))
+  (database/init)
+  (scheduler/schedule))
