@@ -19,6 +19,19 @@ clojure -M:poly ws get:changes:changed-or-affected-projects since:stable skip:de
 
 For that babashka was included in the action and a script writen in clojure which is located in the 'scripts' folder on the root of the project.
 
+## Build and run locally for testing
+This command is going to build an uberjar to later contruct a docker image with.
+clojure -T:build uberjar :project "project-name"
+
+To build the docker image locally (inside the project to test). 
+clojure -T:jib jibbit.core/build
+It's also necessary to change the jib.edn ex:
+:target-image {:image-name "repository/image"
+                :type :docker}
+
+In the project folder inside the "docker" folder run
+docker-compose up
+
 ## Database in firebase
 Commands
 If there is nothig
