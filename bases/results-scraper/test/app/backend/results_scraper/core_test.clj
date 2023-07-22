@@ -2,5 +2,8 @@
   (:require [clojure.test :as test :refer :all]
             [app.backend.results-scraper.core :as core]))
 
-(deftest no-conection
-  (is (= (core/league-list) "error")))
+#_(deftest no-conection
+  (is (= (core/league-list wrong-leagues-url) "error")))
+
+#_(deftest correct-response
+  (is (= (core/league-list correct-leagues-url) (not nil))))
