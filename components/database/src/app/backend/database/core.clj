@@ -12,6 +12,8 @@
                      {:env "GOOGLE_APPLICATION_CREDENTIALS"})))
 
 (defn init []
+  (println (System/getenv "GOOGLE_APPLICATION_CREDENTIALS"))
+  (println config)
   (if-not (d/database-exists? config)
     (do 
       (μ/log ::create-database :state :in-progres)
