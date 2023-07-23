@@ -3,3 +3,6 @@
 
 (defn init []
   (core/init))
+
+(defn transact [data]
+  (core/transact data))
