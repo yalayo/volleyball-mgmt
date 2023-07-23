@@ -30,8 +30,8 @@
 (tap> (select website-content [:div#ergebnisse99 :table :tbody#container-mix :tr]))
 
 (def men-leagues-urls 
-  [{:name "Bezirksklasse 20" :category "bezirk" :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
-   {:name "Kreisliga UNNA Jungen/Mixed" :category "jungen" :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}
+  [{:name "Bezirksklasse 20" :category :bezirk :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
+   {:name "Kreisliga UNNA Jungen/Mixed" :category :jungen :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}
    ])
 
 (defn calculate-ligas-urls [base-url liga-name category sub-category area gender pos]
@@ -81,8 +81,8 @@
 
 ;; Extra leagues
 (def women-leagues-urls
-  [{:name "Bezirksklasse 20" :category "bezirk" :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
-   {:name "Kreisliga UNNA Jungen/Mixed" :category "jungen" :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
+  [{:name "Bezirksklasse 20" :category :bezirk :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
+   {:name "Kreisliga UNNA Jungen/Mixed" :category :jungen :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
 
 ;; Template to generate all the leagues urls from where to scrap
 (def template [{:name "Oberliga" :category "ober-klasse" :sub-category "oberliga" :area "" :gender "maenner" :amount 3}
@@ -97,13 +97,13 @@
 
 ;; Method to generate all the urls and some extra data as well
 (defn generate-urls [template]
-  (doseq [item template]
-    (let [result (atom [])]
+  (let [result (atom [])]
+    (doseq [item template]
       (doseq [pos (range (:amount item))]
-        (swap! result #(into % (calculate-ligas-urls base-url (:name item) (:category item) (:sub-category item) (:area item) (:gender item) (inc pos)))))
-      (tap> @result))))
+        (swap! result #(into % (calculate-ligas-urls base-url (:name item) (:category item) (:sub-category item) (:area item) (:gender item) (inc pos))))))
+    @result))
 
-(generate-urls template)
+(tap> (concat (generate-urls template) women-leagues-urls men-leagues-urls))
 
 ;; Method to scrape an url using selectors
 (defn scrape [url selector]
