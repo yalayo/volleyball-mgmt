@@ -20,3 +20,7 @@
       (d/create-database config)
       (μ/log ::create-database :state :done))
     (μ/log ::create-database :state :already-exists)))
+
+(defn transact [data]
+  (let [conn (d/connect config)]
+    (d/transact conn data)))
