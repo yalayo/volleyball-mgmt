@@ -1,8 +1,7 @@
 (ns database
   (:require [datahike.api :as d]
             [datahike-firebase.core]
-            [portal.api :as p]
-            [cognitect.aws.config :as config]))
+            [portal.api :as p]))
 
 ;; Code to activate portal
 (def portal-atom (atom nil))
@@ -19,14 +18,14 @@
 
 ;; Create a config map with firebase as storage medium
 #_(def config {:store {:backend :firebase
-                     :env "GOOGLE_APPLICATION_CREDENTIALS" ;environment variable with services account details 
-                     :db "https://firebase-db-name.firebaseio.com" ; 
+                     :env "GOOGLE_APPLICATION_CREDENTIALS" 
+                     :db "https://volleyball-3-0-default-rtdb.europe-west1.firebasedatabase.app" ; 
                      :root "datahike"}
              :schema-flexibility :read
              :keep-history? false})
 
 (def config (merge {:store {:backend :firebase 
-                      :db (or (System/getenv "DB_HOST") "http://127.0.0.1:4000")
+                      :db (or (System/getenv "DB_HOST") "http://127.0.0.1:9001")
                       :root (or (System/getenv "DB_ROOT") "volleyball-3-0")}
               :schema-flexibility :read
               :keep-history? false} 
@@ -79,12 +78,22 @@
  :tx-meta nil}
 
 
-(d/transact conn [{:db/ident :name
+(d/transact conn [{:db/ident :league/name
                    :db/valueType :db.type/string
+                   :db/unique :db.unique/identity
                    :db/cardinality :db.cardinality/one }
-                  {:db/ident :age
-                   :db/valueType :db.type/long
-                   :db/cardinality :db.cardinality/one }])
+                  {:db/ident :league/category
+                   :db/valueType :db.type/symbol
+                   :db/cardinality :db.cardinality/one }
+                  {:db/ident :league/sub-category
+                   :db/valueType :db.type/string
+                   :db/cardinality :db.cardinality/one}
+                  {:db/ident :league/area
+                   :db/valueType :db.type/string
+                   :db/cardinality :db.cardinality/one}
+                  {:db/ident :league/url
+                   :db/valueType :db.type/string
+                   :db/cardinality :db.cardinality/one}])
 
 ;; Let's get the current schema
 (def schema (d/pull conn [:db/ident]))
@@ -108,3 +117,20 @@
 
 ;; Clean up the database if it is not needed any more
 (d/delete-database config)
+
+(def schm [{:db/ident :league/name-a
+            :db/valueType :db.type/string
+            :db/unique :db.unique/identity
+            :db/cardinality :db.cardinality/one}])
+
+(defn no-schema? []
+  (let [result (d/q '[:find ?a :where [_ :db/ident ?a]] @conn)
+        new-schema (atom [])]
+    (doseq [item schm]
+      (println item)
+      (when-not (contains? result [(:db/ident item)])
+        (swap! new-schema #(into % item))))
+    (println @new-schema)) 
+  )
+;; Example usage
+(println (no-schema?))
