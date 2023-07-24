@@ -10,3 +10,5 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_ROOT=${DB_ROOT}
       - ENVIRONMENT=prod
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
