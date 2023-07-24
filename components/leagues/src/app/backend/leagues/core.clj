@@ -38,6 +38,10 @@
             (μ/log ::invalid-league-data :explanation (s/explain ::spec/league-data data))))))
     (concat @result men-extra-leagues-urls women-extra-leagues-urls)))
 
+(defn store-schema []
+  (μ/trace ::store-leagues-schema []
+            (storage/store-schema)))
+
 (defn store-leagues-data []
   (μ/trace ::store-leagues-data [] 
            (storage/store-leagues-data (generate-urls template))))

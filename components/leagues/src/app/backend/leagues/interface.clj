@@ -1,8 +1,8 @@
 (ns app.backend.leagues.interface
   (:require [app.backend.leagues.core :as core]))
 
-(defn get-db-schema []
-  (core/get-db-schema))
+(defn store-schema []
+  (core/store-schema))
 
-(defn get-leagues-data []
-  (core/get-leagues-data))
+(defn store-leagues-data []
+  (core/store-leagues-data))

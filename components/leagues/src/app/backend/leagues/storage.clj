@@ -19,7 +19,7 @@
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}])
 
-(defn- store-schema []
+(defn store-schema []
   (database/transact db-schema))
 
 (defn store-leagues-data [data]
