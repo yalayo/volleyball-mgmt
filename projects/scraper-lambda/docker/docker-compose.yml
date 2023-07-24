@@ -5,6 +5,7 @@ services:
     container_name: scraper-lambda
     ports:
       - 8080:8080
+      - 9669:9669
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS}
       - DB_HOST=${DB_HOST}
