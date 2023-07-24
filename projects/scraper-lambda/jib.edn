@@ -2,4 +2,5 @@
  :base-image {:image-name "gcr.io/distroless/java"
               :type :registry}
  :target-image {:image-name "rondonsarnik/scraper-lambda"
-                :type :registry}}
+                :type :registry}
+ :exposed-ports [8080 9669]}
