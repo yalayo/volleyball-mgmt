@@ -11,7 +11,7 @@
   []
   (when-not @__server
     (set-server!
-     (start-server :port port))))
+     (start-server :port port :bind "0.0.0.0"))))
 
 (defn stop
   []
