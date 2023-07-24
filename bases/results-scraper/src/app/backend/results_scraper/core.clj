@@ -2,6 +2,7 @@
   (:require [com.brunobonacci.mulog :as μ] 
             [app.backend.database.interface :as database]
             [app.backend.results-scraper.scheduler :as scheduler]
+            [app.backend.results-scraper.repl :as repl]
             [app.backend.leagues.interface :as leagues]) 
   (:gen-class))
 
@@ -18,6 +19,7 @@
 
 (defn -main [& args]
   (database/init)
-  (leagues/store-schema)
-  (leagues/store-leagues-data)
-  (scheduler/schedule))
+  #_(leagues/store-schema)
+  #_(leagues/store-leagues-data)
+  (scheduler/schedule)
+  (repl/init))
