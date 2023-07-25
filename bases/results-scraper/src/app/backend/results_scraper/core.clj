@@ -18,8 +18,8 @@
 ;; Check how to use credentials (μ/start-publisher! {:type :cloudwatch :group-name "volleyball-3.0"})
 
 (defn -main [& args]
-  #_(database/init)
+  (repl/init)
+  (database/init)
   #_(leagues/store-schema)
   #_(leagues/store-leagues-data)
-  (scheduler/schedule)
-  (repl/init))
+  (scheduler/schedule))
