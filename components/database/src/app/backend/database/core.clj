@@ -1,7 +1,8 @@
 (ns app.backend.database.core
   (:require [com.brunobonacci.mulog :as μ]
             [datahike.api :as d]
-            [datahike-firebase.core]))
+            [datahike-firebase.core])
+  (:import (clojure.lang ExceptionInfo)))
 
 (def ^:private config {:store {:backend :firebase
                                :db (or (System/getenv "DB_HOST") "http://127.0.0.1:4000")
@@ -12,14 +13,15 @@
                        :keep-history? false})
 
 (defn init []
-  (println (System/getenv "GOOGLE_APPLICATION_CREDENTIALS"))
-  (println config)
-  (if-not (d/database-exists? config)
-    (do 
-      (μ/log ::create-database :state :in-progres)
-      (d/create-database config)
-      (μ/log ::create-database :state :done))
-    (μ/log ::create-database :state :already-exists)))
+  (try
+    (if-not (d/database-exists? config)
+      (do
+        (μ/log ::create-database :state :in-progres)
+        (d/create-database config)
+        (μ/log ::create-database :state :done))
+      (μ/log ::create-database :state :already-exists))
+    (catch ExceptionInfo e
+      (μ/log ::log-exception :exception e))))
 
 (defn transact [data]
   (let [conn (d/connect config)]
