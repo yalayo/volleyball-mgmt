@@ -3,7 +3,7 @@
             [clojure.spec.alpha :as s]
             [app.backend.leagues.spec :as spec]
             [app.backend.leagues.storage :as storage])
-  (import [java.util UUID]))
+  (:import (java.util UUID)))
 
 (def ^:private base-url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/")
 
