@@ -2,7 +2,8 @@
   (:require [com.brunobonacci.mulog :as μ]
             [clojure.spec.alpha :as s]
             [app.backend.leagues.spec :as spec]
-            [app.backend.leagues.storage :as storage]))
+            [app.backend.leagues.storage :as storage])
+  (import [java.util UUID]))
 
 (def ^:private base-url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/")
 
@@ -26,7 +27,7 @@
                {:name "Bezirksklasse" :category "bezirk" :sub-category "bezirksklasse" :area "" :gender "frauen" :amount 28}])
 
 (defn- calculate-ligas-urls [base-url liga-name category sub-category area gender pos]
-  {:name (str liga-name " " pos) :category (keyword category) :sub-category sub-category :area area :url (str base-url gender "/" sub-category "-" pos "-" gender)})
+  {:league-id (.toString (UUID/randomUUID)) :name (str liga-name " " pos) :category (keyword category) :sub-category sub-category :area area :url (str base-url gender "/" sub-category "-" pos "-" gender)})
 
 (defn- generate-urls [template]
   (let [result (atom [])]
@@ -34,8 +35,7 @@
       (doseq [pos (range (:amount item))]
         (let [data (calculate-ligas-urls base-url (:name item) (:category item) (:sub-category item) (:area item) (:gender item) (inc pos))]
           (when (s/valid? ::spec/league-data data)
-            (swap! result #(into % data))
-            (μ/log ::invalid-league-data :explanation (s/explain ::spec/league-data data))))))
+            (swap! result #(into % data))))))
     (concat @result men-extra-leagues-urls women-extra-leagues-urls)))
 
 (defn store-schema []
