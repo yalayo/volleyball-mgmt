@@ -57,3 +57,7 @@ Choose the key type as JSON and click on the "Create" button. This will generate
 Once the JSON key file is downloaded, find its location on your computer. This location will be the value for GOOGLE_APPLICATION_CREDENTIALS.
 
 Remember to keep the JSON key file secure and do not share it publicly, as it contains sensitive information that grants access to your Google Cloud resources.
+
+## Connect a repl to prod via ssh
+Use this command to establish a tunnel and then connect from your IDE
+ssh -i instance.key -L 9998:remotehost:9669 user@remotehost
