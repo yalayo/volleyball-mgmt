@@ -14,7 +14,8 @@
   (let [publisher {:type :multi}
         publishers [{:type :console}
                     {:type        :slack
-                     :webhook-url "https://hooks.slack.com/services/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"}]
+                     :webhook-url "https://hooks.slack.com/services/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"
+                     :transform (partial filter #(#{:init-repl :stop-repl} (:mulog/event-name %)))}]
         cloudwatch {:type :cloudwatch 
                     :group-name "volleyball" 
                     :cloudwatch-client-config {:api :logs
