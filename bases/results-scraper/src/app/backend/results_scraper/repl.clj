@@ -13,14 +13,14 @@
   (when-not @__server
     (set-server!
      (start-server :port port :bind "0.0.0.0"))
-    (μ/log ::init-repl :state :started)))
+    (μ/log :init-repl :state :started)))
 
 (defn stop
   []
   (when-let [server @__server]
     (stop-server server)
     (set-server! nil)
-    (μ/log ::stop-repl :state :stopped)))
+    (μ/log :stop-repl :state :stopped)))
 
 
 (defn init
