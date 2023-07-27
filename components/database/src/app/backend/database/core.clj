@@ -16,12 +16,12 @@
   (try
     (if-not (d/database-exists? config)
       (do
-        (μ/log ::create-database :state :in-progres)
+        (μ/log :create-database :state :in-progres)
         (d/create-database config)
-        (μ/log ::create-database :state :done))
-      (μ/log ::create-database :state :already-exists))
+        (μ/log :create-database :state :done))
+      (μ/log :create-database :state :already-exists))
     (catch ExceptionInfo e
-      (μ/log ::log-exception :exception e))))
+      (μ/log :log-exception :exception e))))
 
 (defn transact [data]
   (let [conn (d/connect config)]
