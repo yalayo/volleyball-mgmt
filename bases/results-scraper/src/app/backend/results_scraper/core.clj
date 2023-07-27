@@ -7,15 +7,15 @@
             [app.backend.leagues.interface :as leagues]) 
   (:gen-class))
 
-(μ/set-global-context!
- {:app-name "results-scraper", :version "0.0.1", :env "prod"})
-
 (defn- init-logging []
+  (μ/set-global-context!
+   {:app-name "results-scraper", :version "0.0.1", :env "prod"})
+
   (let [publisher {:type :multi}
         publishers [{:type :console}
-                    {:type        :slack
-                     :webhook-url "https://hooks.slack.com/services/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"
-                     :transform (partial filter #(#{:init-repl :stop-repl} (:mulog/event-name %)))}]
+                    {:type :slack
+                     :webhook-url (System/getenv "WEBHOOK_URL")
+                     :transform (partial filter #(#{:init-repl :stop-repl :create-database :log-exception :store-leagues-data :store-leagues-schema} (:mulog/event-name %)))}]
         cloudwatch {:type :cloudwatch 
                     :group-name "volleyball" 
                     :cloudwatch-client-config {:api :logs
@@ -27,7 +27,6 @@
     (assoc publisher :publishers publishers)))
 
 (defn- init []
-  (println (init-logging))
   (μ/start-publisher! (init-logging)))
 
 
