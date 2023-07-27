@@ -12,6 +12,8 @@
                        :schema-flexibility :read
                        :keep-history? false})
 
+(def ^:private conn (d/connect config))
+
 (defn init []
   (try
     (if-not (d/database-exists? config)
@@ -26,3 +28,7 @@
 (defn transact [data]
   (let [conn (d/connect config)]
     (d/transact conn data)))
+
+(defn query [query]
+  (d/q {:query query}
+       @conn))

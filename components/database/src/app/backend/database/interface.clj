@@ -6,3 +6,6 @@
 
 (defn transact [data]
   (core/transact data))
+
+(defn query [query]
+  (core/query query))
