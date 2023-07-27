@@ -35,7 +35,7 @@
       (doseq [pos (range (:amount item))]
         (let [data (calculate-ligas-urls base-url (:name item) (:category item) (:sub-category item) (:area item) (:gender item) (inc pos))]
           (when (s/valid? ::spec/league-data data)
-            (swap! result #(into % data))))))
+            (swap! result #(conj % data))))))
     (concat @result men-extra-leagues-urls women-extra-leagues-urls)))
 
 (defn store-schema []
