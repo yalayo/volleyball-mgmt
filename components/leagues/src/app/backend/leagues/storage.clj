@@ -14,6 +14,9 @@
    {:db/ident :sub-category
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
+   {:db/ident :gender
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one}
    {:db/ident :area
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}

@@ -8,12 +8,12 @@
 (def ^:private base-url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/")
 
 (def ^:private men-extra-leagues-urls
-  [{:name "Bezirksklasse 20" :category :bezirk :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
-   {:name "Kreisliga UNNA Jungen/Mixed" :category :jungen :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
+  [{:league-id (.toString (UUID/randomUUID)) :name "Bezirksklasse 20" :category :bezirk :sub-category "bezirksklasse" :gender "maenner" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
+   {:league-id (.toString (UUID/randomUUID)) :name "Kreisliga UNNA Jungen/Mixed" :category :jungen :sub-category "unna-mixed" :gender "maenner" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
 
 (def ^:private women-extra-leagues-urls
-  [{:name "Bezirksklasse 20" :category :bezirk :sub-category "bezirksklasse" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
-   {:name "Kreisliga UNNA Jungen/Mixed" :category :jungen :sub-category "unna-mixed" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
+  [{:league-id (.toString (UUID/randomUUID)) :name "Bezirksklasse 20" :category :bezirk :sub-category "bezirksklasse" :gender "frauen" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/bezirksklasse-20-maenner/"}
+   {:league-id (.toString (UUID/randomUUID)) :name "Kreisliga UNNA Jungen/Mixed" :category :jungen :sub-category "unna-mixed" :gender "frauen" :area "" :url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/maenner/kreislauf-unna/"}])
 
 ;; Template to generate all the leagues urls from where to scrap
 (def ^:private template [{:name "Oberliga" :category "ober-klasse" :sub-category "oberliga" :area "" :gender "maenner" :amount 3}
@@ -27,7 +27,7 @@
                {:name "Bezirksklasse" :category "bezirk" :sub-category "bezirksklasse" :area "" :gender "frauen" :amount 28}])
 
 (defn- calculate-ligas-urls [base-url liga-name category sub-category area gender pos]
-  {:league-id (.toString (UUID/randomUUID)) :name (str liga-name " " pos) :category (keyword category) :sub-category sub-category :area area :url (str base-url gender "/" sub-category "-" pos "-" gender)})
+  {:league-id (.toString (UUID/randomUUID)) :name (str liga-name " " pos) :category (keyword category) :sub-category sub-category :gender gender :area area :url (str base-url gender "/" sub-category "-" pos "-" gender)})
 
 (defn- generate-urls [template]
   (let [result (atom [])]
@@ -39,9 +39,9 @@
     (concat @result men-extra-leagues-urls women-extra-leagues-urls)))
 
 (defn store-schema []
-  (μ/trace ::store-leagues-schema []
+  (μ/trace :store-leagues-schema []
             (storage/store-schema)))
 
 (defn store-leagues-data []
-  (μ/trace ::store-leagues-data [] 
+  (μ/trace :store-leagues-data [] 
            (storage/store-leagues-data (generate-urls template))))
