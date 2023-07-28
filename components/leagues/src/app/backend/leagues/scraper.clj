@@ -40,6 +40,6 @@
 (defn scan-table [data]
   (let [website-content (html-resource (java.net.URL. (:url data)))
         content (select website-content [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr])
-        result (map extract content (:league-id data))]
+        result (extract content (:league-id data))]
     (μ/log :standing-scanned :message "Scan result: " result)
     (storage/store-league-standings result)))
