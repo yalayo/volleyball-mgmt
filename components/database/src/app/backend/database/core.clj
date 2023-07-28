@@ -12,8 +12,6 @@
                        :schema-flexibility :read
                        :keep-history? false})
 
-(def ^:private conn (d/connect config))
-
 (defn init []
   (try
     (if-not (d/database-exists? config)
@@ -24,6 +22,8 @@
       (μ/log :create-database :state :already-exists))
     (catch ExceptionInfo e
       (μ/log :log-exception :exception e))))
+
+(def ^:private conn (d/connect config))
 
 (defn transact [data]
   (let [conn (d/connect config)]
