@@ -14,4 +14,4 @@
                       (if-some [data nil]
                         (μ/trace :standing-scanned :message (str "Scanned at " time) []
                                  (scraper/scan-table data))
-                        (μ/log :standing-scanned :message "Process finished for " data))))))
+                        #_(μ/log :standing-scanned :message "Process finished for " data))))))
