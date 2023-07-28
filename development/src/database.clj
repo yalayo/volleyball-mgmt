@@ -95,6 +95,9 @@
                    :db/valueType :db.type/string
                    :db/cardinality :db.cardinality/one}])
 
+;; Save some related data
+(d/transact conn [{:league/area "dus"}])
+
 ;; Let's get the current schema
 (def schema (d/pull conn [:db/ident]))
 ;; Print the attributes
@@ -108,10 +111,11 @@
                   {:age 15 }])
 
 ;; Search the data
-(d/q '[:find ?e ?n ?a
+(d/q '[:find ?e ?n ?a ?z
        :where
-       [?e :name ?n]
-       [?e :age ?a]]
+       [?e :league/name ?n]
+       [?e :league/category ?a]
+       [?e :league/area ?z]]
   @conn)
 ;; #{[4 "Bob" 30] [5 "Charlie" 40] [3 "Alice" 20]}
 
