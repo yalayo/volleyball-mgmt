@@ -1,8 +1,10 @@
 (ns app.backend.leagues.core
   (:require [com.brunobonacci.mulog :as μ]
             [clojure.spec.alpha :as s]
+            [clojure.core.async :refer [>!! chan]]
             [app.backend.leagues.spec :as spec]
-            [app.backend.leagues.storage :as storage])
+            [app.backend.leagues.storage :as storage]
+            [app.backend.leagues.scheduler :as scheduler])
   (:import (java.util UUID)))
 
 (def ^:private base-url "https://www.volleyball.nrw/spielwesen/ergebnisdienst/")
@@ -45,3 +47,10 @@
 (defn store-leagues-data []
   (μ/trace :store-leagues-data [] 
            (storage/store-leagues-data (generate-urls template))))
+
+(defn scrap-league-standings []
+  (let [leagues (storage/leagues-to-scan)
+        channel (chan (count leagues))]
+    (doseq [item leagues]
+      (>!! channel item))
+    (scheduler/schedule-standings-scans channel)))

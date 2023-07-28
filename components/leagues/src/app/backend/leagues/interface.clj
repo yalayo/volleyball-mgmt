@@ -6,3 +6,6 @@
 
 (defn store-leagues-data []
   (core/store-leagues-data))
+
+(defn scrap-league-standings []
+  (core/scrap-league-standings))
