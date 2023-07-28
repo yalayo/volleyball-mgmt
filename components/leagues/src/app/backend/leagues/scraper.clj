@@ -1,6 +1,10 @@
 (ns app.backend.leagues.scraper
-  (:require [net.cgrand.enlive-html :refer [html-resource select]]
-            [app.backend.leagues.spec :as spec]))
+  (:require [com.brunobonacci.mulog :as μ]
+            [net.cgrand.enlive-html :refer [html-resource select]]
+            [clojure.string :as str]
+            [clojure.spec.alpha :as s]
+            [app.backend.leagues.spec :as spec]
+            [app.backend.leagues.storage :as storage]))
 
 ;; Organizing the data
 (defn- extract-attribute [data]
@@ -10,23 +14,31 @@
       (str/trim value)
       (first (:content value)))))
 
-(defn- extract [data]
-  (doseq [item data] 
-    (if (= (first item) :content)
-      (if (s/valid? ::spec/column (last item))
-        (let [content (last item)
-              place (extract-attribute (first content))
-              team (extract-attribute (second content))
-              games (extract-attribute (nth content 2))
-              scores (extract-attribute (nth content 3))
-              sets (extract-attribute (nth content 4))
-              points (extract-attribute (nth content 5))]
-          (tap> content)
-          {:place place :team team :games games :scores scores :sets sets :points points})
-        (s/explain ::spec/column (last item)))
-     )))
+(defn- extract [data league-id]
+  (let [result (atom [])]
+    (doseq [item data]
+      (if (= (first item) :content)
+        (if (s/valid? ::spec/column (last item))
+          (let [content (last item)
+                place (extract-attribute (first content))
+                team (extract-attribute (second content))
+                games (extract-attribute (nth content 2))
+                scores (extract-attribute (nth content 3))
+                sets (extract-attribute (nth content 4))
+                points (extract-attribute (nth content 5))
+                standing {:standing-league league-id
+                          :standing-item-place place
+                          :name team
+                          :standing-item-games games
+                          :standing-item-scores scores
+                          :standing-item-sets sets
+                          :standing-item-points points}]
+            (swap! result #(conj % standing)))
+          (μ/log :invalid-data :explanation (s/explain-data ::spec/column (last item)))))))
+  )
 
-(defn scan-table [url]
-  (let [website-content (html-resource (java.net.URL. url))
-        content (select website-content [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr])]
-    (map extract content)))
+(defn scan-table [data]
+  (let [website-content (html-resource (java.net.URL. (:url data)))
+        content (select website-content [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr])
+        result (map extract content (:league-id data))]
+    (storage/store-league-standings result)))
