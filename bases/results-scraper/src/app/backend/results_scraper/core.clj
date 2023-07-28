@@ -15,7 +15,7 @@
         publishers [{:type :console}
                     {:type :slack
                      :webhook-url (System/getenv "WEBHOOK_URL")
-                     :transform (partial filter #(#{:init-repl :stop-repl :create-database :log-exception :store-leagues-data :store-leagues-schema} (:mulog/event-name %)))}]
+                     :transform (partial filter #(#{:init-repl :stop-repl :create-database :log-exception :store-leagues-data :store-leagues-schema :standing-scanned} (:mulog/event-name %)))}]
         cloudwatch {:type :cloudwatch 
                     :group-name "volleyball" 
                     :cloudwatch-client-config {:api :logs
