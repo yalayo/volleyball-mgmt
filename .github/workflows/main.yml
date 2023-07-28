@@ -65,8 +65,6 @@ jobs:
           # List all files containing dependencies:
           key: cljdeps-${{ hashFiles('deps.edn') }}
           restore-keys: cljdeps- 
-      - name: Create uberjar
-        run: clojure -T:build uberjar :project ${{ matrix.project }}
       - name: Create docker image
         run: |
           cd ./projects/${{ matrix.project }}/
