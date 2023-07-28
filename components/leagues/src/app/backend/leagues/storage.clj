@@ -71,6 +71,10 @@
 (defn store-leagues-data [data]
   (database/transact data))
 
+(defn store-league-standings [data]
+  ;; A bit more of processing is needed here.
+  (database/transact data))
+
 (defn leagues-to-scan []
   (let [data (database/query "[:find ?n ?a :where [?e :league-id ?n][?e :url ?a]]")
         keys [:league-id :url]
