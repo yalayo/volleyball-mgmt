@@ -26,6 +26,9 @@
    {:db/ident :team-id
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
+   {:db/ident :team-name
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one}
    {:db/ident :standing-id
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
@@ -34,29 +37,23 @@
     :db/cardinality :db.cardinality/one}
    {:db/ident :standing-league
     :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-id
-    :db/valueType :db.type/string
-    :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-parent
+    :db/cardinality :db.cardinality/one} 
+   {:db/ident :standing-team
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-team
-    :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-place
+   {:db/ident :standing-place
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-games
+   {:db/ident :standing-games
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-scores
+   {:db/ident :standing-scores
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-sets
+   {:db/ident :standing-sets
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :standing-item-points
+   {:db/ident :standing-points
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}])
 
@@ -71,8 +68,7 @@
 (defn store-leagues-data [data]
   (database/transact data))
 
-(defn store-league-standings [data]
-  ;; A bit more of processing is needed here.
+(defn store-data [data] 
   (database/transact data))
 
 (defn leagues-to-scan []
