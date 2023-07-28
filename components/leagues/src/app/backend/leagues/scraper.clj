@@ -1,45 +1,51 @@
 (ns app.backend.leagues.scraper
-  (:require [com.brunobonacci.mulog :as μ]
-            [net.cgrand.enlive-html :refer [html-resource select]]
+  (:require [net.cgrand.enlive-html :refer [html-resource select]]
             [clojure.string :as str]
-            [clojure.spec.alpha :as s]
-            [app.backend.leagues.spec :as spec]
-            [app.backend.leagues.storage :as storage]))
+            [app.backend.leagues.storage :as storage])
+  (:import (java.util UUID)))
+
+(defn- store-teams [data]
+  (let [teams (atom [])]
+    (doseq [item data]
+      (swap! teams #(conj % {:team-id (:standing-team item) :team-name (:team-name item)})))
+    (storage/store-data @teams)))
+
+(defn- store-standings [data]
+  (storage/store-data data))
 
 ;; Organizing the data
 (defn- extract-attribute [data]
-  (tap> data)
   (let [value (first (:content data))] 
     (if (= (type value) java.lang.String)
       (str/trim value)
       (first (:content value)))))
 
-(defn- extract [data league-id]
-  (let [result (atom [])]
-    (doseq [item data]
-      (if (= (first item) :content)
-        (if (s/valid? ::spec/column (last item))
-          (let [content (last item)
-                place (extract-attribute (first content))
-                team (extract-attribute (second content))
-                games (extract-attribute (nth content 2))
-                scores (extract-attribute (nth content 3))
-                sets (extract-attribute (nth content 4))
-                points (extract-attribute (nth content 5))
-                standing {:standing-league league-id
-                          :standing-item-place place
-                          :name team
-                          :standing-item-games games
-                          :standing-item-scores scores
-                          :standing-item-sets sets
-                          :standing-item-points points}]
-            (swap! result #(conj % standing)))
-          (μ/log :invalid-data :explanation (s/explain-data ::spec/column (last item)))))))
-  )
+(defn- extract [data league-id] 
+  (let [place (extract-attribute (first data))
+        team (extract-attribute (second data))
+        games (extract-attribute (nth data 2))
+        scores (extract-attribute (nth data 3))
+        sets (extract-attribute (nth data 4))
+        points (extract-attribute (nth data 5))
+        standing {:standing-id (.toString (UUID/randomUUID))
+                  :standing-season "2022-2023"
+                  :standing-league league-id
+                  :standing-place place
+                  :team-name team
+                  :standing-team (.toString (UUID/randomUUID))
+                  :standing-games games
+                  :standing-scores scores
+                  :standing-sets sets
+                  :standing-points points}]
+    standing))
 
 (defn scan-table [data]
-  (let [website-content (html-resource (java.net.URL. (:url data)))
+  (let [url (:url data)
+        league-id (:league-id data)
+        website-content (html-resource (java.net.URL. url))
         content (select website-content [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr])
-        result (extract content (:league-id data))]
-    (μ/log :standing-scanned :message "Scan result: " result)
-    (storage/store-league-standings result)))
+        result (atom [])]
+    (doseq [item content]
+      (swap! result #(conj % (extract (:content item) league-id))))
+    (store-teams @result)
+    (store-standings @result)))
