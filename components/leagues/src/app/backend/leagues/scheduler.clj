@@ -3,8 +3,7 @@
             [chime.core :as chime]
             [clojure.core.async :refer [<!!]]
             [app.backend.leagues.scraper :as scraper])
-  (:import [java.time LocalTime ZonedDateTime ZoneId Period Instant Duration]
-           [java.io FileNotFoundException]))
+  (:import [java.time Instant Duration]))
 
 (defn schedule-standings-scans [channel]
   (chime/chime-at (-> (chime/periodic-seq (Instant/now) (Duration/ofMinutes 1))
