@@ -12,6 +12,6 @@
                   (fn [time]
                     (let [data (<!! channel)]
                       (if-some [data nil]
+                        (μ/log :standing-scanned :message "Process finished for " data)
                         (μ/trace :standing-scanned :message (str "Scanned at " time) []
-                                 (scraper/scan-table data))
-                        #_(μ/log :standing-scanned :message "Process finished for " data))))))
+                                 (scraper/scan-table data)))))))
