@@ -9,6 +9,7 @@
                                :root (or (System/getenv "DB_ROOT") "volleyball-3-0")
                                :env (if (= (System/getenv "ENVIRONMENT") "prod")
                                       "GOOGLE_APPLICATION_CREDENTIALS")}
+                       :name "volleyball"
                        :schema-flexibility :read
                        :keep-history? false})
 
