@@ -94,8 +94,6 @@ jobs:
           scp ./projects/${{ matrix.project }}/docker/docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "\
           cd ${{ secrets.WORK_DIR }} && \
-          export DB_HOST=${{ secrets.FIREBASE_DB_HOST }}
-          export DB_ROOT=${{ secrets.FIREBASE_DB_ROOT }}
           docker compose pull && \
           docker compose up -d && \
           exit"
