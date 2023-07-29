@@ -33,11 +33,3 @@
 (defn -main [& args]
   (init)
   (repl/init))
-
-(comment
-  #_(database/init)
-  #_(leagues/store-schema)
-  #_(leagues/store-leagues-data)
-  #_(leagues/scrap-league-standings)
-  #_(scheduler/schedule)
-  )
