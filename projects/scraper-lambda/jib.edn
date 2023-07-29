@@ -1,5 +1,5 @@
 {:main app.backend.results-scraper.core
- :base-image {:image-name "gcr.io/distroless/java"
+ :base-image {:image-name "gcr.io/distroless/java:11-nonroot"
               :type :registry}
  :target-image {:image-name "rondonsarnik/scraper-lambda"
                 :type :registry}
