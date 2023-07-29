@@ -32,9 +32,12 @@
 
 (defn -main [& args]
   (init)
-  (repl/init)
+  (repl/init))
+
+(comment
   #_(database/init)
   #_(leagues/store-schema)
   #_(leagues/store-leagues-data)
   #_(leagues/scrap-league-standings)
-  (scheduler/schedule))
+  #_(scheduler/schedule)
+  )
