@@ -14,7 +14,8 @@
                        :keep-history? false})
 
 (defn init []
-  (try
+  (d/create-database config)
+  #_(try
     (if-not (d/database-exists? config)
       (do
         (μ/log :create-database :state :in-progres)
