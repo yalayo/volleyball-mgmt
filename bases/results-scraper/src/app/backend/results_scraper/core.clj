@@ -32,7 +32,8 @@
 
 (defn -main [& args]
   (init)
-  (repl/init))
+  (repl/init)
+  (scheduler/schedule))
 
 (comment
   #_(database/init)
