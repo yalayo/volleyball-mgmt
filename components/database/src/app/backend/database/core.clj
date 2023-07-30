@@ -31,5 +31,6 @@
   (d/transact @conn data))
 
 (defn query [query]
-  (d/q {:query query}
-       @conn))
+  (let [conn (d/connect config)]
+    (d/q {:query query}
+         @conn)))
