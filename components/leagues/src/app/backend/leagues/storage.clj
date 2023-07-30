@@ -29,6 +29,9 @@
    {:db/ident :team-name
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
+   {:db/ident :team-gender
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one}
    {:db/ident :standing-id
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}

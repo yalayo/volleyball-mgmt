@@ -10,7 +10,7 @@
 (defn- store-teams [data]
   (let [teams (atom [])]
     (doseq [item data]
-      (swap! teams #(conj % {:team-id (:standing-team item) :team-name (:team-name item)})))
+      (swap! teams #(conj % {:team-id (:standing-team item) :team-name (:team-name item) :team-gender (:team-gender item)})))
     (storage/store-data @teams)))
 
 (defn- store-standings [data]
