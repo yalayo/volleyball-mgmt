@@ -36,10 +36,10 @@
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
    {:db/ident :standing-league
-    :db/valueType :db.type/ref
+    :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one} 
    {:db/ident :standing-team
-    :db/valueType :db.type/ref
+    :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
    {:db/ident :standing-place
     :db/valueType :db.type/string
@@ -57,13 +57,8 @@
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}])
 
-(defn store-schema []
-  (let [result (database/query "[:find ?a :where [_ :db/ident ?a]]")
-        new-schema (atom [])]
-    (doseq [item db-schema]
-      (when-not (contains? result [(:db/ident item)])
-        (swap! new-schema #(conj % item))))
-    (database/transact @new-schema)))
+(defn store-schema [] 
+  (database/transact db-schema))
 
 (defn store-leagues-data [data]
   (database/transact data))
@@ -72,9 +67,12 @@
   (database/transact data))
 
 (defn leagues-to-scan []
-  (let [data (database/query "[:find ?n ?a :where [?e :league-id ?n][?e :url ?a]]")
-        keys [:league-id :url]
+  (let [data (database/query "[:find ?league-id ?url ?gender :where [?e :league-id ?league-id][?e :url ?url][?e :gender ?gender]]")
+        keys [:league-id :url :gender]
         result (atom [])]
     (doseq [item data]
       (swap! result #(conj % (zipmap keys item))))
     @result))
+
+(defn exist-standing? [id]
+  (not-empty (database/query '[:find ?n ?a :where [?e :league-id ?n] [?e :url ?a] [(= ?n id)]])))
