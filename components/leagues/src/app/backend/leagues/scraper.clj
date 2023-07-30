@@ -57,17 +57,16 @@
 
 (defn- decorate-scan [data]
   (let [limiter (tl/create {:timeout-duration 10000})
-        retry (r/create {:max-attempts 3
+        retry (r/create "scan-retry" {:max-attempts 3
                          :wait-duration 5000})
-        protected-scan (-> (scan-table data)
-                            (tl/decorate limiter)
-                            (r/decorate retry))]
+        protected-scan (-> scan-table
+                        (tl/decorate limiter)
+                        (r/decorate retry))]
     (protected-scan data)))
 
 (defn process-table [data]
-  (if (storage/exist-standing? (:league-id data))
-    (μ/log :already-scanned :message "League already scanned: " (:league-id data))
+  (if (storage/not-exist-standing? (:league-id data)) 
     (do
-      (μ/log :standing-scanned :message (str "Scan started for league" (:league-id data)))
       (decorate-scan data)
-      (μ/log :standing-scanned :message (str "Scan finished for league" (:league-id data))))))
+      (μ/log :standing-scanned :message (str "Scan finished for league " (:league-id data))))
+    (μ/log :already-scanned :message "League already scanned: " (:league-id data))))
