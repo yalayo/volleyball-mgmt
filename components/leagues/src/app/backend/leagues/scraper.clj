@@ -1,5 +1,8 @@
 (ns app.backend.leagues.scraper
-  (:require [net.cgrand.enlive-html :refer [html-resource select]]
+  (:require [com.brunobonacci.mulog :as μ]
+            [net.cgrand.enlive-html :refer [html-resource select]]
+            [resilience4clj-timelimiter.core :as tl]
+            [resilience4clj-retry.core :as r]
             [clojure.string :as str]
             [app.backend.leagues.storage :as storage])
   (:import (java.util UUID)))
@@ -20,7 +23,7 @@
       (str/trim value)
       (first (:content value)))))
 
-(defn- extract [data league-id] 
+(defn- extract [data league-id gender] 
   (let [place (extract-attribute (first data))
         team (extract-attribute (second data))
         games (extract-attribute (nth data 2))
@@ -31,8 +34,9 @@
                   :standing-season "2022-2023"
                   :standing-league league-id
                   :standing-place place
-                  :team-name team
                   :standing-team (.toString (UUID/randomUUID))
+                  :team-name team
+                  :team-gender gender
                   :standing-games games
                   :standing-scores scores
                   :standing-sets sets
@@ -42,10 +46,28 @@
 (defn scan-table [data]
   (let [url (:url data)
         league-id (:league-id data)
+        gender (:gender data)
         website-content (html-resource (java.net.URL. url))
         content (select website-content [:div.liga-detail :table.table.table-striped.table-hover.title-top :tbody :tr])
         result (atom [])]
     (doseq [item content]
-      (swap! result #(conj % (extract (:content item) league-id))))
+      (swap! result #(conj % (extract (:content item) league-id gender))))
     (store-teams @result)
     (store-standings @result)))
+
+(defn- decorate-scan [data]
+  (let [limiter (tl/create {:timeout-duration 10000})
+        retry (r/create {:max-attempts 3
+                         :wait-duration 5000})
+        protected-scan (-> (scan-table data)
+                            (tl/decorate limiter)
+                            (r/decorate retry))]
+    (protected-scan data)))
+
+(defn process-table [data]
+  (if (storage/exist-standing? (:league-id data))
+    (μ/log :already-scanned :message "League already scanned: " (:league-id data))
+    (do
+      (μ/log :standing-scanned :message (str "Scan started for league" (:league-id data)))
+      (decorate-scan data)
+      (μ/log :standing-scanned :message (str "Scan finished for league" (:league-id data))))))
