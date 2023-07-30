@@ -74,5 +74,5 @@
       (swap! result #(conj % (zipmap keys item))))
     @result))
 
-(defn exist-standing? [id]
-  (not-empty (database/query '[:find ?n ?a :where [?e :league-id ?n] [?e :url ?a] [(= ?n id)]])))
+(defn not-exist-standing? [id]
+  (empty? (database/query '[:find ?n ?a :where [?e :league-id ?n] [?e :url ?a] [(= ?n id)]])))
